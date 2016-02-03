@@ -18,7 +18,7 @@ impl<T: Eq> VecSet<T> {
 		VecSet { v: v }
 	}
 
-	pub fn to_vec(self) -> Vec<T> {
+	pub fn into_vec(self) -> Vec<T> {
 		self.v
 	}
 
@@ -44,6 +44,10 @@ impl<T: Eq> VecSet<T> {
 
 	pub fn into_iter(self) -> IntoIter<T> {
 		self.v.into_iter()
+	}
+
+	pub fn contains(&self, x: &T) {
+		self.v.iter().any(|v| x == v)
 	}
 
 	pub fn insert(&mut self, x: T) -> bool {
