@@ -1,6 +1,7 @@
 use std::slice::{Iter, IterMut};
 use std::vec::IntoIter;
 
+#[derive(Default)]
 pub struct VecSet<T> {
 	v: Vec<T>
 }
@@ -46,7 +47,7 @@ impl<T: Eq> VecSet<T> {
 		self.v.into_iter()
 	}
 
-	pub fn contains(&self, x: &T) {
+	pub fn contains(&self, x: &T) -> bool {
 		self.v.iter().any(|v| x == v)
 	}
 

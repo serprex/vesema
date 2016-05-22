@@ -15,13 +15,13 @@ pub use sorted_map::SortedMap;
 #[cfg(test)]
 mod test {
 	use VecSet;
-    #[test]
-    fn vecset() {
+	#[test]
+	fn vecset() {
 		let mut a = VecSet::new();
 		assert!(a.insert(0));
 		assert!(a.insert(1));
 		assert!(!a.insert(0));
 		assert!(a.remove(&0));
 		assert!(!a.remove(&0));
-    }
+	}
 }

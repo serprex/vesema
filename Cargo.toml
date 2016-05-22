@@ -1,8 +1,7 @@
 [package]
 name = "vesema"
-version = "0.1.0"
+version = "0.0.2"
 authors = ["serprex"]
+repository = "https://github.com/serprex/vesema"
 description = "Map/Set collections optimized for very small problem sizes"
 license = "MIT"
-
-[dependencies]

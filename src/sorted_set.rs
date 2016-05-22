@@ -2,30 +2,30 @@ use std::slice::{Iter, IterMut};
 use std::vec::IntoIter;
 use SortedVec;
 
+#[derive(Default)]
 pub struct SortedSet<T> {
 	v: SortedVec<T>
 }
 
 impl<T: Ord> SortedSet<T> {
 	pub fn new() -> Self {
-		SortedSet { v: Vec::new() }
+		SortedSet { v: SortedVec::new() }
 	}
 
 	pub fn with_capacity(size: usize) -> Self {
-		SortedSet { v: Vec::with_capacity(size) }
+		SortedSet { v: SortedVec::with_capacity(size) }
 	}
 
-	pub fn from_vec(mut v: Vec<T>) -> Self {
-		v.sort();
-		SortedSet { v: v }
+	pub fn from_vec(v: Vec<T>) -> Self {
+		SortedSet { v: SortedVec::from_vec(v) }
 	}
 
 	pub fn from_vec_unchecked(v: Vec<T>) -> Self {
-		SortedSet { v: v }
+		SortedSet { v: SortedVec::from_vec_unchecked(v) }
 	}
 
 	pub fn into_vec(self) -> Vec<T> {
-		self.v
+		self.v.into_vec()
 	}
 
 	pub fn capacity(&self) -> usize {
@@ -64,18 +64,18 @@ impl<T: Ord> SortedSet<T> {
 		self.v.binary_search(x)
 	}
 
-	pub fn contains(&self, x: &T) {
+	pub fn contains(&self, x: &T) -> bool {
 		self.binary_search(x).is_ok()
 	}
 
 	pub fn insert(&mut self, x: T) -> bool {
-		let search = self.binary_search(x);
+		let search = self.binary_search(&x);
 		match search {
-			Ok(idx) => {
-				self.v.insert(idx, x);
+			Ok(_) => false,
+			Err(idx) => {
+				self.v.insert_at(idx, x);
 				true
 			},
-			Err(idx) => false,
 		}
 	}
 
@@ -83,15 +83,15 @@ impl<T: Ord> SortedSet<T> {
 		let search = self.binary_search(x);
 		match search {
 			Ok(idx) => {
-				self.v.remove(idx);
+				self.v.remove_at(idx);
 				true
 			},
-			Err(idx) => false,
+			Err(_) => false,
 		}
 	}
 
 	pub fn remove_at(&mut self, idx: usize) -> T {
-		self.v.remove(idx)
+		self.v.remove_at(idx)
 	}
 
 	pub fn clear(&mut self) {

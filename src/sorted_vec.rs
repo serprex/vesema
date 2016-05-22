@@ -1,7 +1,9 @@
 use std::slice::{Iter, IterMut};
 use std::vec::IntoIter;
 use std::cmp::*;
+use std::ops::{Index, IndexMut};
 
+#[derive(Default)]
 pub struct SortedVec<T> {
 	v: Vec<T>
 }
@@ -64,16 +66,25 @@ impl<T: Ord> SortedVec<T> {
 		self.v.binary_search(x)
 	}
 
-	pub fn contains(&self, x: &T) {
+	pub fn binary_search_by<F>(&self, f: F) -> Result<usize, usize>
+		where F: FnMut(&T) -> Ordering {
+		self.v.binary_search_by(f)
+	}
+
+	pub fn contains(&self, x: &T) -> bool {
 		self.binary_search(x).is_ok()
 	}
 
 	pub fn insert(&mut self, x: T) {
-		let search = self.binary_search(x);
+		let search = self.binary_search(&x);
 		self.v.insert(match search {
 			Ok(idx) => idx,
 			Err(idx) => idx,
 		}, x)
+	}
+
+	pub fn insert_at(&mut self, idx: usize, x: T) {
+		self.v.insert(idx, x)
 	}
 
 	pub fn remove(&mut self, x: &T) -> bool {
@@ -83,7 +94,7 @@ impl<T: Ord> SortedVec<T> {
 				self.v.remove(idx);
 				true
 			},
-			Err(idx) => false,
+			Err(_) => false,
 		}
 	}
 
@@ -93,5 +104,19 @@ impl<T: Ord> SortedVec<T> {
 
 	pub fn clear(&mut self) {
 		self.v.clear()
+	}
+}
+
+impl<T: Ord> Index<usize> for SortedVec<T> {
+	type Output = T;
+
+	fn index(&self, idx: usize) -> &T {
+		self.v.index(idx)
+	}
+}
+
+impl<T: Ord> IndexMut<usize> for SortedVec<T> {
+	fn index_mut(&mut self, idx: usize) -> &mut T {
+		self.v.index_mut(idx)
 	}
 }
